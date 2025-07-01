@@ -1,8 +1,8 @@
-
 import boto3
 import datetime
 import re
 
+# === AWS Clients ===
 session = boto3.session.Session()
 region = session.region_name
 ce = session.client('ce')
@@ -10,11 +10,12 @@ ec2 = session.client('ec2')
 rds = session.client('rds')
 elbv2 = session.client('elbv2')
 
+# === Fixed Date Range ===
 def get_today_date_range():
     today = datetime.date.today()
-    start = today.replace(day=1).isoformat()
-    end = today.isoformat()
-    return start, end
+    start = today.replace(day=1)
+    end = today + datetime.timedelta(days=1)  # End must be exclusive & > start
+    return start.isoformat(), end.isoformat()
 
 def normalize_service_name(service_name):
     return re.sub(r'[^a-z0-9_]', '_', service_name.lower())
